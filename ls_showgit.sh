@@ -14,6 +14,9 @@ data_filename=$(mktemp)
 ls --color=always $@ >$data_filename
 get_git_data "modified" "git ls-files -m"
 get_git_data "deleted" "git ls-files -d"
+get_git_data "nontraced" "git ls-files -o"
 show_infos files_modified "modified" "black" "cyan" $data_filename
+show_infos dirs_modified "contains_modified" "black" "magenta" $data_filename
+show_infos files_nontraced "not_traced" "black" "red" $data_filename
 cat $data_filename
 rm $data_filename
