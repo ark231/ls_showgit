@@ -1,10 +1,6 @@
 #!/bin/bash
 get_git_data(){
-	#tmp_arg=("$@")
-	#unset tmp_arg[0]
-	#tmp_arg=${tmp_arg[@]}
 	tmp_arg=$2
-	#tmp_pathes=($(git ls-files -m))
 	tmp_pathes=( $($tmp_arg) )
 	tmp_files=()
 	tmp_dirs=()
@@ -14,6 +10,10 @@ get_git_data(){
 		tmp_a_dir=$(dirname $a_file)
 		if [ $tmp_a_dir = "." ];then
 			tmp_files+=($(basename $a_file))
+			continue
+		fi
+		if [[ "$tmp_a_dir" =~ ".*$tmp_prev_a_dir.*" ]];then
+			continue
 		fi
 		while true
 		do
@@ -36,6 +36,14 @@ get_git_data(){
 	return_files=("${tmp_files[@]}")
 	declare -rn return_dirs=$varname_dirs
 	return_dirs=("${tmp_dirs[@]}")
-#	eval $varname_files=${tmp_files[@]}
-#	eval $varname_dirs=${tmp_dirs[@]}
+}
+__get_git_data_faster(){
+	tmp_dirs=$($2|xargs -r dirname|sed -e"s/\\/.*//"|sort|uniq|grep -v "^.\$")
+	tmp_files=$($2|grep "^[^/]\+\$"|xargs -r basename -a)
+	varname_files="files_$1"
+	varname_dirs="dirs_$1"
+	declare -rn return_files=$varname_files
+	return_files=("$tmp_files")
+	declare -rn return_dirs=$varname_dirs
+	return_dirs=("$tmp_dirs")
 }
