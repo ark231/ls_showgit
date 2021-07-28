@@ -22,9 +22,12 @@ declare -Ar COLORS_BACK=(
 ["white"]="\x1b[47m"
 )
 COLOR_CLEAR="\x1b[00m"
+add_null_end(){
+	sed -i "s/$/\x0/" $1
+}
 __show_info(){
 	# topic_filename info char_color background_color tmpfilename 
-	sed -ie "s/.*$1.*/& ${COLORS_CHAR[$3]}${COLORS_BACK[$4]}$2$COLOR_CLEAR/" $5
+	sed -i "s/.* $1[*/=>@|]\?.*/& ${COLORS_CHAR[$3]}${COLORS_BACK[$4]}$2$COLOR_CLEAR/" $5
 }
 
 show_infos(){
@@ -33,4 +36,11 @@ show_infos(){
 	do
 		__show_info $a_file $2 $3 $4 $5
 	done
+}
+
+merge_datas(){
+	#src_flname dst_flname
+	sed -i "s/.*\x00//" $1
+	merged_filename=$(mktemp)
+	paste -d" " $2 $1 >$merged_filename
 }
