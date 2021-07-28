@@ -1,5 +1,5 @@
 #!/bin/bash
-get_git_data(){
+__get_git_data_slower(){
 	tmp_arg=$2
 	tmp_pathes=( $($tmp_arg) )
 	tmp_files=()
@@ -37,7 +37,7 @@ get_git_data(){
 	declare -rn return_dirs=$varname_dirs
 	return_dirs=("${tmp_dirs[@]}")
 }
-__get_git_data_faster(){
+get_git_data(){
 	tmp_dirs=$($2|xargs -r dirname|sed -e"s/\\/.*//"|sort|uniq|grep -v "^.\$")
 	tmp_files=$($2|grep "^[^/]\+\$"|xargs -r basename -a)
 	varname_files="files_$1"

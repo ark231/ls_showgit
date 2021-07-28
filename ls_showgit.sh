@@ -13,13 +13,10 @@ if [ "${git_exists}" != 0 ] || [ "${is_git_repo}" != 0 ];then
 fi
 data_filename=$(mktemp)
 ls --color=always $@ >$data_filename
-#get_git_data "modified" "git ls-files -m"
-#get_git_data "deleted" "git ls-files -d"
-#get_git_data "nontraced" "git ls-files -o"
-__get_git_data_faster "modified" "git ls-files -m"
-__get_git_data_faster "deleted" "git ls-files -d"
-__get_git_data_faster "nontraced" "git ls-files -o "
-__get_git_data_faster "not_yet_traced" "git ls-files -o --exclude-standard"
+get_git_data "modified" "git ls-files -m"
+get_git_data "deleted" "git ls-files -d"
+get_git_data "nontraced" "git ls-files -o "
+get_git_data "not_yet_traced" "git ls-files -o --exclude-standard"
 diff_set files_ignored "=" files_nontraced "minus" files_not_yet_traced
 #diff_set dirs_ignored "=" dirs_nontraced "minus" dirs_not_yet_traced
 dirs_ignored=("$(git ls-files -o --directory|grep "^[^/]\+/\$"|sed -e's/\///')")
